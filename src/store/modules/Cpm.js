@@ -28,22 +28,6 @@ const mutations = {
 
 const actions = {
 
-    // allProducts ({commit}) {
-    //     commit(ALL_PRODUCTS)
-    //     // Fetch actual products from the API
-    //     axios.get(`${API_BASE}/products`).then(response => {
-    //         commit(ALL_PRODUCTS_SUCCESS, response.data.data)
-    //     })
-    // },
-    //
-    // allClients ({commit}){
-    //     commit(ALL_CLIENTS)
-    //
-    //     axios.get(`${API_BASE}/users/client`).then(response => {
-    //         commit(ALL_CLIENTS_SUCCESS, response.data.data)
-    //     })
-    // }
-
 };
 
 export default  {

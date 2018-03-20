@@ -52,6 +52,7 @@
                 </form>
             </div>
         </div>
+        <button v-on:click="reiniciar" class="btn btn-info btn-block">Reiniciar</button>
     </div>
 </template>
 
@@ -67,6 +68,9 @@
             }
         },
         methods: {
+            reiniciar(){
+                location.reload()
+            },
             validateErrors(){
                 this.$validator.validateAll().then((valid) => {
 
