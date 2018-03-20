@@ -6,13 +6,17 @@
         <div class="container">
           <div class="row">
             <div class="col-sm-8 col-md-7 py-4">
-              <h4 class="text-white">Acerca del proyecto</h4>
-              <p class="text-muted">Informacion del proyecto</p>
+              <h4 class="text-white">Acerca del proyecto CPM</h4>
+              <p class="text-muted">El método de la ruta crítica o del camino crítico es un algoritmo utilizado para el cálculo de tiempos y plazos en la planificación de proyectos.</p>
+              <p class="text-muted">Se translado la logica de este algoritmo al FRAMEWORK VUE.JS, para ser presentado al profesor Edward Irizarry</p>
             </div>
             <div class="col-sm-4 offset-md-1 py-4">
-              <h4 class="text-white">Contact</h4>
+              <h4 class="text-white">Estudiantes</h4>
               <ul class="list-unstyled">
-                <li><a href="#" class="text-white">Follow on Twitter</a></li>
+                <li><a class="text-white">Ronny Ramirez 2001-0706</a></li>
+                <li><a class="text-white">Cristian Gomez 2014-1135</a></li>
+                <li><a class="text-white">Julio Delgado 2014-1146</a></li>
+                <li><a class="text-white">Franly Peña 2015-0155</a></li>
               </ul>
             </div>
           </div>

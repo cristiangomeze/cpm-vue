@@ -6,11 +6,6 @@ import VeeValidate from 'vee-validate'
 import VueNumeric from 'vue-numeric'
 import VueCurrencyFilter from 'vue-currency-filter'
 
-import 'jquery/dist/jquery.min'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.min'
-import 'popper.js/dist/popper.min'
-
 Vue.use(VeeValidate);
 Vue.use(VueNumeric);
 
