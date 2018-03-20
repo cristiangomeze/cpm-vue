@@ -55,30 +55,39 @@
         <div class="card mb-4 box-shadow">
             <div class="card-body">
                 <button v-on:click.prevent="rutaCritica" class="btn btn-primary btn-block">Calcular ruta critica</button>
-                <table class="table table-striped table-responsive" v-if="critical_route.length > 0">
-                    <thead>
-                    <tr>
-                        <th scope="col">Actividad</th>
-                        <th scope="col">Duraccion/Mes</th>
-                        <th scope="col">ES</th>
-                        <th scope="col">EF</th>
-                        <th scope="col">LS</th>
-                        <th scope="col">LF</th>
-                        <th scope="col">Ruta Critica</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="activity in critical_route">
-                        <th>{{ activity.actividad }}</th>
-                        <th>{{ activity.duracion }}</th>
-                        <td>{{ activity.early_start }}</td>
-                        <td>{{ activity.early_finish }}</td>
-                        <td>{{ activity.late_finish }}</td>
-                        <td>{{ activity.late_start }}</td>
-                        <td>{{ esCritica(activity) }}</td>
-                    </tr>
-                    </tbody>
-                </table v>
+                <div v-if="critical_route.length > 0">
+                    <table class="table table-striped table-responsive" >
+                        <thead>
+                        <tr>
+                            <th scope="col">Actividad</th>
+                            <th scope="col">Duraccion/Mes</th>
+                            <th scope="col">ES</th>
+                            <th scope="col">EF</th>
+                            <th scope="col">LS</th>
+                            <th scope="col">LF</th>
+                            <th scope="col">Ruta Critica</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="activity in critical_route">
+                            <th>{{ activity.actividad }}</th>
+                            <th>{{ activity.duracion }}</th>
+                            <td>{{ activity.early_start }}</td>
+                            <td>{{ activity.early_finish }}</td>
+                            <td>{{ activity.late_finish }}</td>
+                            <td>{{ activity.late_start }}</td>
+                            <td>{{ esCritica(activity) }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <h3>
+                        Duracion total: {{ duracionTotal().late_finish }}
+                    </h3>
+                    <h3>
+                       Costo total: {{ costeTotal() | currency }}
+                    </h3>
+                </div>
+
             </div>
         </div>
     </div>
@@ -182,6 +191,12 @@
             },
             amountActivity(objeto){
                 return objeto.costo * objeto.duracion;
+            },
+            duracionTotal(){
+                return this.critical_route[this.critical_route.length - 1];
+            },
+            costeTotal(){
+                return this.totalQuantity + (this.expenses * this.duracionTotal().late_finish);
             },
         },
         computed: {

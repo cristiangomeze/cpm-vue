@@ -3,7 +3,6 @@ export const ADD_ACTIVITY = 'ADD_ACTIVITY';
 
 const state = {
     activities: [],
-    expenses: 0,
 };
 
 const getters = {
