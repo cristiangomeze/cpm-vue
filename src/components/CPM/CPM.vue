@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="row">
                     <form-cpm></form-cpm>
-                    <results></results>
+                    <result-cpm></result-cpm>
                 </div>
             </div>
         </div>
@@ -13,12 +13,12 @@
 
 <script>
     import FormCpm from './FormCPM'
-    import Results from './Results'
+    import ResultCpm from './ResultCPM'
     export default {
         name: "cpm",
         components: {
             FormCpm,
-            Results
+            ResultCpm
         }
     }
 </script>

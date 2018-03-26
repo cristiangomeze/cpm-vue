@@ -19,20 +19,28 @@
                                 placeholder="Prerrequisito"
                                 name="prerrequisito"
                                 :multiple="true"
-                                :options="optionsPre"
+                                :options="selectOptions"
                                 :hide-selected="true"
                                 :preserve-search="true"
                                 v-model="actividad.prerrequisito"></Multiselect>
                     </div>
                     <div class="form-group">
-                        <label>Duracion <span class="is-danger">*</span></label>
+                        <label>Duración <span class="is-danger">*</span></label>
+                        <multiselect
+                                v-model="value"
+                                :options="options"
+                                :searchable="false"
+                                :close-on-select="false"
+                                :show-labels="false"
+                                placeholder="Selecionar duración">
+                        </multiselect>
+                        <br>
                         <vue-numeric
                                 class="form-control"
-                                placeholder="Dur./Mes"
-                                currency="Mes"
+                                v-bind:placeholder="showDuration"
+                                v-bind:currency="showDuration"
                                 separator=","
                                 v-bind:min="1"
-                                v-bind:max="48"
                                 v-bind:minus="false"
                                 v-model="actividad.duracion"></vue-numeric>
                     </div>
@@ -44,7 +52,7 @@
                                 currency="RD $"
                                 separator=","
                                 v-bind:min="1"
-                                v-bind:max="90000000"
+                                v-bind:max="999999999"
                                 v-bind:minus="false"
                                 v-model="actividad.costo"></vue-numeric>
                     </div>
@@ -64,7 +72,13 @@
         components: { Multiselect },
         data(){
             return {
-                actividad: {}
+                actividad: {
+                    prerrequisito: null,
+                    costo: 1,
+                    duracion: 1,
+                },
+                value: '',
+                options: ['Segundos', 'Minutos', 'Horas', 'Dias', 'Semanas', 'Meses', 'Trimestres', 'Años']
             }
         },
         methods: {
@@ -73,65 +87,37 @@
             },
             validateErrors(){
                 this.$validator.validateAll().then((valid) => {
-
-                    if(this.notHasPropertyActividad()){
-                        return false;
+                    if(valid){
+                        return this.createActivity();
                     }
-
-                    if(this.esActividadRepetida(this.actividad)){
-                        return this.addActivity(valid);
-                    }
-
-                    return alert('actividad repetida elije otra por favor...');
                 });
             },
-            addActivity(valid){
-                if (valid) {
-                    this.actividadUpperCase();
-                    this.issetDuracion();
-                    this.issetCoste();
-                    this.$store.commit('ADD_ACTIVITY', this.actividad);
-                    this.limpiarActividad();
-                    return true;
-                }
-                return true;
-            },
-            notHasPropertyActividad(){
-              return ! this.actividad.hasOwnProperty('actividad');
-            },
-            esActividadRepetida(actividad){
-                return this.showActivities.findIndex(obj => obj.actividad === actividad.actividad.toUpperCase()) === -1;
+            createActivity(){
+                this.$store.dispatch("createActivity", this.actividad).catch(error => {
+                    alert(error);
+                });
+                this.limpiarActividad();
             },
             limpiarActividad(){
-                this.actividad = {};
+                this.actividad = {
+                    costo: 1,
+                    duracion: 1,
+                    prerrequisito: null,
+                };
                 this.$validator.reset();
             },
-            actividadUpperCase(){
-                this.actividad.actividad = this.actividad.actividad.toUpperCase();
-            },
-            issetDuracion(){
-                if(!this.actividad.hasOwnProperty('duracion')){
-                    this.actividad.duracion = 1;
-                }
-            },
-            issetCoste(){
-                if(!this.actividad.hasOwnProperty('costo')){
-                    this.actividad.costo = 1;
-                }
-            }
         },
         computed: {
-            optionsPre(){
-                let options = [];
-
-                this.showActivities.forEach(function(element) {
-                    options.push(element.actividad);
-                });
-                return options;
-            },
             ...mapGetters([
-                'showActivities'
+                'showActivities',
+                'selectOptions',
+                'showDuration'
             ])
+        },
+        watch: {
+            value: function (val) {
+                this.$store.dispatch("selectDuration", {'duracion': val});
+            },
         }
     }
 </script>
