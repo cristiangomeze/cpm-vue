@@ -55,36 +55,36 @@
         <div class="card mb-4 box-shadow">
             <div class="card-body">
                 <button v-on:click.prevent="rutaCritica" class="btn btn-primary btn-block">Calcular ruta critica</button>
-                <div v-if="critical_route.length > 0">
+                <div v-if="showActivities.length > 0">
                     <table class="table table-striped table-responsive" >
                         <thead>
                         <tr>
                             <th scope="col">Actividad</th>
                             <th scope="col">Duraccion/Mes</th>
-                            <th scope="col">ES</th>
-                            <th scope="col">EF</th>
-                            <th scope="col">LS</th>
-                            <th scope="col">LF</th>
+                            <th scope="col">Comienzo temprano (ES)</th>
+                            <th scope="col">Fin temprano (EF)</th>
+                            <th scope="col">Inicio tardío (LS)</th>
+                            <th scope="col">Final tardío (LF)</th>
                             <th scope="col">Ruta Critica</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="activity in critical_route">
+                        <tr v-for="activity in showActivities">
                             <th>{{ activity.actividad }}</th>
                             <th>{{ activity.duracion }}</th>
                             <td>{{ activity.early_start }}</td>
                             <td>{{ activity.early_finish }}</td>
-                            <td>{{ activity.late_finish }}</td>
                             <td>{{ activity.late_start }}</td>
+                            <td>{{ activity.late_finish }}</td>
                             <td>{{ esCritica(activity) }}</td>
                         </tr>
                         </tbody>
                     </table>
                     <h3>
-                        Duracion total: {{ duracionTotal().late_finish }}
+                        Duracion total: {{ totalDuration }}
                     </h3>
                     <h3>
-                       Costo total: {{ costeTotal() | currency }}
+                       Costo total: {{ totalCost | currency }}
                     </h3>
                 </div>
 
@@ -103,30 +103,28 @@
         name: "resultados",
         data() {
             return{
-                critical_route: [],
-                status: false,
                 expenses: 0,
             }
         },
         methods: {
             rutaCritica(){
-                this.critical_route = [];
                 if(this.showActivities.length > 0){
                     this.getFirstTime();
                     this.getLastTime();
-                    this.status = true;
                 }
             },
             getFirstTime(){
                 let self = this;
-                this.showActivities.slice().forEach(function(actividadActual) {
+                this.showActivities.forEach(function(actividadActual) {
                     if(!self.activityHasPrerequisite(actividadActual)){
-                        self.critical_route.push({
+
+                        let actividad = {
                             'actividad': actividadActual.actividad,
-                            'duracion': actividadActual.duracion,
                             'early_start':  actividadActual.early_start = 0,
                             'early_finish': actividadActual.duracion
-                        });
+                        };
+
+                        self.$store.commit("FIRST_TIME_ACTIVITY", actividad);
                     }
                     if(self.activityHasPrerequisite(actividadActual)){
                         let PrerequisiteMaxAactivity = null;
@@ -138,39 +136,49 @@
                                 PrerequisiteMaxAactivity = self.findActivty(prerequisito);
                             }
                         });
-
-                        self.critical_route.push({
+                        let actividad = {
                             'actividad': actividadActual.actividad,
-                            'duracion': actividadActual.duracion,
-                            'prerrequisito': actividadActual.prerrequisito,
                             'early_start':  PrerequisiteMaxAactivity.early_finish,
                             'early_finish': actividadActual.duracion + PrerequisiteMaxAactivity.early_finish,
-                        });
+                        };
+                        self.$store.commit("FIRST_TIME_ACTIVITY", actividad);
                     }
                 });
             },
             getLastTime(){
                 let self = this;
-                this.critical_route.reverse().forEach(function(actividadActual) {
+                this.showActivities.reverse().forEach(function(actividadActual) {
                     if(!self.activityHasLatefinish(actividadActual)){
-                        actividadActual.late_finish = actividadActual.early_finish;
-                        actividadActual.late_start = actividadActual.late_finish - actividadActual.duracion;
+                        let actividad = {
+                            'actividad': actividadActual.actividad,
+                            'late_finish':  actividadActual.early_finish,
+                            'late_start': actividadActual.early_finish - actividadActual.duracion,
+                        };
+                        self.$store.commit("LAST_TIME_ACTIVITY", actividad);
                     }
                     if(self.activityHasPrerequisite(actividadActual)){
                         actividadActual.prerrequisito.forEach(function(prerequisito) {
                             let actividadAnterior = self.findActivty(prerequisito);
                             if (!self.activityHasLatefinish(self.findActivty(prerequisito))){
-                                actividadAnterior.late_finish = actividadActual.late_start;
-                                actividadAnterior.late_start = actividadAnterior.late_finish - actividadAnterior.duracion;
+                                let actividad = {
+                                    'actividad': actividadAnterior.actividad,
+                                    'late_finish':  actividadActual.late_start,
+                                    'late_start': actividadActual.late_start - actividadAnterior.duracion,
+                                };
+                                self.$store.commit("LAST_TIME_ACTIVITY", actividad);
                             }
                             if (self.activityHasLatefinish(self.findActivty(prerequisito)) && actividadAnterior.late_finish > actividadActual.late_start){
-                                actividadAnterior.late_finish = actividadActual.late_start;
-                                actividadAnterior.late_start = actividadAnterior.late_finish - actividadAnterior.duracion;
+                                let actividad = {
+                                    'actividad': actividadAnterior.actividad,
+                                    'late_finish':  actividadActual.late_start,
+                                    'late_start': actividadAnterior.late_finish - actividadAnterior.duracion,
+                                };
+                                self.$store.commit("LAST_TIME_ACTIVITY", actividad);
                             }
                         });
                     }
                 });
-                this.critical_route.reverse();
+                this.showActivities.reverse();
             },
             activityHasPrerequisite(objecto){
                 return objecto.hasOwnProperty('prerrequisito');
@@ -179,7 +187,7 @@
                 return objecto.hasOwnProperty('late_finish');
             },
             findActivty(actividad){
-                return this.critical_route.find(function (obj) { return obj.actividad === actividad; });
+                return this.showActivities.find(function (obj) { return obj.actividad === actividad; });
             },
             esCritica(actividad){
                 let tiempoPrimero = actividad.early_finish - actividad.late_finish;
@@ -191,18 +199,14 @@
             },
             amountActivity(objeto){
                 return objeto.costo * objeto.duracion;
-            },
-            duracionTotal(){
-                return this.critical_route[this.critical_route.length - 1];
-            },
-            costeTotal(){
-                return this.totalQuantity + (this.expenses * this.duracionTotal().late_finish);
-            },
+            }
         },
         computed: {
             ...mapGetters([
                 'showActivities',
                 'totalQuantity',
+                'totalDuration',
+                'totalCost'
             ])
         }
     }
