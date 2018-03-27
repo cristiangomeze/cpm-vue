@@ -23,7 +23,12 @@
                     <td>{{ activity.duracion }}</td>
                     <td>{{ activity.costo | currency }}</td>
                     <td>{{ amountActivity(activity) | currency }}</td>
-                    <td><button>Eliminar</button></td>
+                    <td>
+                        <div class="btn-group-vertical btn-group-sm">
+                            <button class="btn btn-primary" onclick="alert('Editar, Proximamente')">Editar</button>
+                            <button class="btn btn-danger" onclick="alert('Eliminar, Proximamente')">Eliminar</button>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>

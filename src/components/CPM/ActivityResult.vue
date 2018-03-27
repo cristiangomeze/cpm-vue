@@ -3,7 +3,7 @@
         <div class="card-body">
             <button v-on:click.prevent="rutaCritica" class="btn btn-primary btn-block">Calcular ruta critica</button>
             <div>
-                <table class="table table-striped table-responsive" >
+                <table class="table table-striped table-responsive">
                     <thead>
                     <tr>
                         <th scope="col">Actividad</th>
@@ -40,45 +40,46 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import {mapGetters} from 'vuex'
+
     export default {
         name: "ActivityResult",
         methods: {
-            rutaCritica(){
-               this.getFirstTime()
-                   .then(() => {
-                       this.getLastTime();
-                   }).catch(errors => {
-                   console.log(errors);
-               });
+            rutaCritica() {
+                this.getFirstTime()
+                    .then(() => {
+                        this.getLastTime();
+                    }).catch(errors => {
+                    console.log(errors);
+                });
             },
-            getFirstTime(){
+            getFirstTime() {
                 let self = this;
                 return new Promise((resolve) => {
                     this.showActivities.forEach(actividad => {
-                        if(!self.isPrerequisite(actividad)) {
+                        if (!self.isPrerequisite(actividad)) {
                             self.$store.dispatch("getFirstTime", {
                                 'id': actividad.id,
-                                'early_start':  actividad.early_start = 0,
+                                'early_start': actividad.early_start = 0,
                                 'early_finish': actividad.duracion
                             });
                             return;
                         }
 
-                        if(self.isPrerequisite(actividad)){
+                        if (self.isPrerequisite(actividad)) {
                             let Prerequisite = null;
-                            actividad.prerrequisito.forEach(function(prerequisito_id) {
-                                if (Prerequisite === null){
+                            actividad.prerrequisito.forEach(function (prerequisito_id) {
+                                if (Prerequisite === null) {
                                     Prerequisite = self.findActivity(prerequisito_id);
                                 }
-                                if (Prerequisite.early_finish < self.findActivity(prerequisito_id).early_finish){
+                                if (Prerequisite.early_finish < self.findActivity(prerequisito_id).early_finish) {
                                     Prerequisite = self.findActivity(prerequisito_id);
                                 }
                             });
 
                             self.$store.dispatch("getFirstTime", {
                                 'id': actividad.id,
-                                'early_start':  Prerequisite.early_finish,
+                                'early_start': Prerequisite.early_finish,
                                 'early_finish': actividad.duracion + Prerequisite.early_finish
                             });
                         }
@@ -87,48 +88,58 @@
                     return resolve();
                 });
             },
-            getLastTime(){
+            getLastTime() {
                 let self = this;
-                this.showActivities.slice().reverse().forEach(function(actividad) {
-                    if(!self.isLatefinish(actividad)){
+                this.showActivities.slice().reverse().forEach((actividad, index) => {
+                    if (index === 0) {
                         self.$store.dispatch("getLastTime", {
                             'id': actividad.id,
-                            'late_finish':  actividad.early_finish,
+                            'late_finish': actividad.early_finish,
                             'late_start': actividad.early_finish - actividad.duracion
                         });
                     }
-                    if(self.isLatefinish(actividad) && self.isPrerequisite(actividad)){
-                        actividad.prerrequisito.forEach(function(prerequisito_id) {
-                            let Prerequisito = self.findActivity(prerequisito_id);
-                            if (!self.isLatefinish(self.findActivity(prerequisito_id))){
-                                self.$store.dispatch("getLastTime", {
-                                    'id': Prerequisito.id,
-                                    'late_finish':  actividad.late_start,
-                                    'late_start': actividad.late_start - Prerequisito.duracion,
-                                });
-                            }
-                            if (self.isLatefinish(self.findActivity(prerequisito_id)) && Prerequisito.late_finish > actividad.late_start){
-                                self.$store.dispatch("getLastTime", {
-                                    'id': Prerequisito.id,
-                                    'late_finish':  Prerequisito.late_start,
-                                    'late_start': Prerequisito.late_finish - Prerequisito.duracion,
-                                });
-                            }
+
+                    if (!self.isPrerequisite(actividad)) {
+                        self.$store.dispatch("getLastTime", {
+                            'id': actividad.id,
+                            'late_finish': actividad.early_finish,
+                            'late_start': actividad.early_finish - actividad.duracion
                         });
+                        return;
                     }
+
+                    actividad.prerrequisito.forEach(prerequisito_id => {
+                        if (!self.isLatefinish(self.findActivity(prerequisito_id))) {
+                            let Prerequisito = self.findActivity(prerequisito_id);
+                            self.$store.dispatch("getLastTime", {
+                                'id': Prerequisito.id,
+                                'late_finish': actividad.late_start,
+                                'late_start': actividad.late_start - Prerequisito.duracion,
+                            });
+                        }
+                        if (self.isLatefinish(self.findActivity(prerequisito_id)) && self.findActivity(prerequisito_id).late_finish > actividad.late_start) {
+                            let Prerequisito = self.findActivity(prerequisito_id);
+                            self.$store.dispatch("getLastTime", {
+                                'id': Prerequisito.id,
+                                'late_finish': actividad.late_start,
+                                'late_start': actividad.late_start - Prerequisito.duracion,
+                            });
+                        }
+                    });
+
                 });
             },
 
-            isPrerequisite(activity){
-                return  activity.prerrequisito !== null;
+            isPrerequisite(activity) {
+                return Boolean(activity.prerrequisito);
             },
-            isLatefinish(activity){
-                return  activity.late_finish !== null;
+            isLatefinish(activity) {
+                return Boolean(activity.late_finish);
             },
-            esCritica(actividad){
+            esCritica(actividad) {
                 let tiempoPrimero = actividad.early_finish - actividad.late_finish;
                 let tiempoUltimo = actividad.late_start - actividad.early_start;
-                if (tiempoPrimero === 0 && tiempoUltimo === 0){
+                if (tiempoPrimero === 0 && tiempoUltimo === 0) {
                     return 'SI';
                 }
                 return 'NO';
