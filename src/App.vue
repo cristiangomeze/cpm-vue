@@ -42,9 +42,9 @@
     <footer class="text-muted">
       <div class="container">
         <p class="float-right">
-          <a href="#">Back to top</a>
+          <a href="#">Volver arriba</a>
         </p>
-        <p>customize it for yourself!</p>
+        <p>&copy; 2018 THEPany & Estudiantes del Proyecto</p>
       </div>
     </footer>
 

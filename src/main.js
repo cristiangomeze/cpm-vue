@@ -4,21 +4,15 @@ import store from './store'
 import router from './route'
 import VeeValidate from 'vee-validate'
 import VueNumeric from 'vue-numeric'
+import spain from 'vee-validate/dist/locale/es';
 import VueCurrencyFilter from 'vue-currency-filter'
-import ActivityTable from './components/CPM/ActivityTable'
-import AdministrativeExpenses from './components/CPM/AdministrativeExpenses'
-import ActivityResult from './components/CPM/ActivityResult'
-
-Vue.component('activity-table', ActivityTable);
-Vue.component('administrative-expenses', AdministrativeExpenses);
-Vue.component('activity-result', ActivityResult);
 
 Vue.use(VeeValidate);
 Vue.use(VueNumeric);
 
 
 Vue.use(VueCurrencyFilter, {
-        symbol : 'RD $',
+        symbol : '$',
         thousandsSeparator: ',',
         fractionCount: 2,
         fractionSeparator: '.',
@@ -30,5 +24,10 @@ const vm = new Vue({
     el: '#app',
     store,
     router,
-    render: h => h(App)
+    render: h => h(App),
+    created: function () {
+        this.$validator.localize('es', {
+            messages: spain.messages,
+        });
+    },
 });

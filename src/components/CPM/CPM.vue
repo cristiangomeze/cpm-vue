@@ -3,7 +3,7 @@
         <div class="album py-5 bg-light">
             <div class="container">
                 <div class="row">
-                    <form-cpm></form-cpm>
+                    <main-cpm></main-cpm>
                     <result-cpm></result-cpm>
                 </div>
             </div>
@@ -12,13 +12,14 @@
 </template>
 
 <script>
-    import FormCpm from './FormCPM'
-    import ResultCpm from './ResultCPM'
+    import MainCpm from './Main/MainCPM'
+    import ResultCpm from './Main/ResultCPM'
+
     export default {
         name: "cpm",
         components: {
-            FormCpm,
-            ResultCpm
+            MainCpm,
+            ResultCpm,
         }
     }
 </script>

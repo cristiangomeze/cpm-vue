@@ -1,15 +1,22 @@
 export const ADD_ACTIVITY = 'ADD_ACTIVITY';
-export const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
+export const EDIT_ACTIVITY = 'EDIT_ACTIVITY';
 export const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
 export const FIRST_TIME_ACTIVITY = 'FIRST_TIME_ACTIVITY';
 export const LAST_TIME_ACTIVITY = 'LAST_TIME_ACTIVITY';
 export const ADD_EXPENSES = 'ADD_EXPENSES';
 export const SELECTED_DURATION = 'SELECTED_DURATION';
+export const SELECTED_CONVERSION = 'SELECTED_CONVERSION';
+export const TASA = 'TASA';
+export const STATUS = 'STATUS';
 
 const state = {
     activities: [],
     expenses: 0,
-    duration: 'Meses'
+    duration: 'Meses',
+    tasa: 49.53,
+    conversion: 'DOP - Peso dominicano',
+    activity_id: null,
+    status: false,
 };
 
 const getters = {
@@ -21,9 +28,6 @@ const getters = {
     },
     showActivities: (state) => {
         return state.activities;
-    },
-    showDuration: (state) => {
-        return "Duración/" + state.duration;
     },
     selectOptions: (state, getters) => {
         let options = [];
@@ -45,6 +49,36 @@ const getters = {
     totalCost: (state, getters) => {
         return getters.totalQuantity + (state.expenses * getters.totalDuration);
     },
+    totalCostConvert: (state, getters) => {
+        if(state.conversion === "DOP - Peso dominicano") {
+            return getters.totalCost * state.tasa;
+        }
+
+        return getters.totalCost / state.tasa;
+
+    },
+    optionDuration: (state) => {
+        let duracion = state.duration;
+
+        if(duracion === null) { duracion = 'Meses' }
+
+        return "Dur./" + duracion;
+    },
+    isNotEmptyActivities: (state) => {
+        return Boolean(state.activities.length > 0);
+    },
+    editActivity: (state, getters) => {
+        if(state.activity_id === null) {
+            return {};
+        }
+        return getters.findActivity(state.activity_id);
+    },
+    status: (state) => {
+      return state.status;
+    },
+    showConversion: (state) => {
+        return state.conversion;
+    }
 
 };
 
@@ -52,9 +86,8 @@ const mutations = {
     [ADD_ACTIVITY]: (state, payload) => {
         state.activities.push(payload);
     },
-    [UPDATE_ACTIVITY]: (state, { id, draft }) => {
-        let index = state.activities.findIndex(activity => activity.id = id);
-        state.activities.splice(index, 1, draft);
+    [EDIT_ACTIVITY]: (state, payload) => {
+        state.activity_id = payload.id;
     },
     [DELETE_ACTIVITY]: (state, { id }) => {
         let index = state.activities.findIndex(activity => activity.id = id);
@@ -73,6 +106,15 @@ const mutations = {
     },
     [SELECTED_DURATION] : (state, { duracion }) => {
         state.duration = duracion;
+    },
+    [SELECTED_CONVERSION] : (state, { conversion }) => {
+        state.conversion = conversion;
+    },
+    [STATUS] : (state) => {
+        state.status = true;
+    },
+    [TASA] : (state, payload) => {
+        state.tasa = payload.tasa;
     }
 };
 
@@ -96,9 +138,6 @@ const actions = {
             return resolve(activity);
         });
     },
-    updateActivity(context, payload) {
-        context.commit(UPDATE_ACTIVITY,payload);
-    },
     deleteActivity(context, id) {
         context.commit(DELETE_ACTIVITY,id);
     },
@@ -119,7 +158,19 @@ const actions = {
     },
     selectDuration({ commit }, payload) {
         commit(SELECTED_DURATION, payload);
-    }
+    },
+    selectConversion({ commit }, payload) {
+        commit(SELECTED_CONVERSION, payload);
+    },
+    editActivityId({ commit, getters }, payload) {
+        commit(EDIT_ACTIVITY, payload);
+    },
+    status({ commit }){
+        commit(STATUS);
+    },
+    tasa({ commit }, payload){
+        commit(TASA, payload);
+    },
 };
 
 export default  {
