@@ -10,7 +10,7 @@
                         <a class="nav-link" id="detailInfo-tab" data-toggle="tab" href="#detailInfo" role="tab" aria-controls="detailInfo" aria-selected="false">Informacion detallada</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Proximamente</a>
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Nuevo...</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -20,7 +20,9 @@
                     <div class="tab-pane fade" id="detailInfo" role="tabpanel" aria-labelledby="detailInfo-tab">
                         <result-table></result-table>
                     </div>
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                        <disbursement-table></disbursement-table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -31,12 +33,14 @@
     import { mapGetters } from 'vuex'
     import Resume from './ResultComponents/Resume'
     import ResultTable from './ResultComponents/ResultTable'
+    import DisbursementTable from './ResultComponents/DisbursementTable'
 
     export default {
         name: "ResultCPM",
         components: {
-            Resume,
-            ResultTable
+          Resume,
+          ResultTable,
+          DisbursementTable,
         },
         computed: {
             ...mapGetters([

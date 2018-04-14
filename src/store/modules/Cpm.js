@@ -10,75 +10,86 @@ export const TASA = 'TASA';
 export const STATUS = 'STATUS';
 
 const state = {
-    activities: [],
-    expenses: 0,
-    duration: 'Meses',
-    tasa: 49.53,
-    conversion: 'DOP - Peso dominicano',
-    activity_id: null,
-    status: false,
+  activities: [],
+  expenses: 0,
+  duration: 'Meses',
+  tasa: 49.53,
+  conversion: 'DOP - Peso dominicano',
+  activity_id: null,
+  status: false,
 };
 
 const getters = {
+  getExpenses: (state) => {
+    return state.expenses;
+    },
 
-    findActivity: (state) => {
-        return function (id) {
-            return state.activities.find(activity => activity.id === id);
-        }
-    },
-    showActivities: (state) => {
-        return state.activities;
-    },
-    selectOptions: (state, getters) => {
-        let options = [];
-
-        getters.showActivities.forEach(function(element) {
-            options.push(element.id);
-        });
-        return options;
-    },
-    totalQuantity: (state) => {
-        return state.activities.reduce((total, item) => total + (item.costo * item.duracion), 0);
-    },
-    totalDuration: (state) => {
-        let duracion = state.activities.slice(-1);
-        if (duracion.length === 0){ return 0; }
-        if(duracion[0].hasOwnProperty('late_finish')){ return duracion[0].late_finish; }
-        return 0;
-    },
-    totalCost: (state, getters) => {
-        return getters.totalQuantity + (state.expenses * getters.totalDuration);
-    },
-    totalCostConvert: (state, getters) => {
-        if(state.conversion === "DOP - Peso dominicano") {
-            return getters.totalCost * state.tasa;
-        }
-
-        return getters.totalCost / state.tasa;
-
-    },
-    optionDuration: (state) => {
-        let duracion = state.duration;
-
-        if(duracion === null) { duracion = 'Meses' }
-
-        return "Dur./" + duracion;
-    },
-    isNotEmptyActivities: (state) => {
-        return Boolean(state.activities.length > 0);
-    },
-    editActivity: (state, getters) => {
-        if(state.activity_id === null) {
-            return {};
-        }
-        return getters.findActivity(state.activity_id);
-    },
-    status: (state) => {
-      return state.status;
-    },
-    showConversion: (state) => {
-        return state.conversion;
+  findActivity: (state) => {
+    return function (id) {
+      return state.activities.find(activity => activity.id === id);
     }
+    },
+
+  showActivities: (state) => {
+    return state.activities;
+    },
+
+  selectOptions: (state, getters) => {
+    let options = [];
+
+    getters.showActivities.forEach(function(element) {
+      options.push(element.id);
+    });
+
+    return options;
+    },
+
+  totalQuantity: (state) => {
+    return state.activities.reduce((total, item) => total + (item.costo * item.duracion), 0);
+    },
+
+  totalDuration: (state) => {
+    let duracion = state.activities.slice(-1);
+    if (duracion.length === 0){ return 0; }
+    if(duracion[0].hasOwnProperty('late_finish')){ return duracion[0].late_finish; }
+    return 0;
+    },
+
+  totalCost: (state, getters) => {
+    return getters.totalQuantity + (state.expenses * getters.totalDuration);
+    },
+
+  totalCostConvert: (state, getters) => {
+    if(state.conversion === "DOP - Peso dominicano") {
+      return getters.totalCost * state.tasa;
+    }
+    return getters.totalCost / state.tasa;
+    },
+
+  optionDuration: (state) => {
+    let duracion = state.duration;
+    if(duracion === null) { duracion = 'Meses' }
+    return "Dur./" + duracion;
+    },
+
+  isNotEmptyActivities: (state) => {
+    return Boolean(state.activities.length > 0);
+    },
+
+  editActivity: (state, getters) => {
+    if(state.activity_id === null) {
+      return {};
+    }
+    return getters.findActivity(state.activity_id);
+    },
+
+  status: (state) => {
+    return state.status;
+    },
+
+  showConversion: (state) => {
+    return state.conversion;
+  }
 
 };
 
@@ -90,7 +101,7 @@ const mutations = {
         state.activity_id = payload.id;
     },
     [DELETE_ACTIVITY]: (state, { id }) => {
-        let index = state.activities.findIndex(activity => activity.id = id);
+        let index = state.activities.findIndex(activity => activity.id === id);
         state.activities.splice(index, 1);
     },
     [FIRST_TIME_ACTIVITY] : (state, payload) => {
@@ -138,8 +149,8 @@ const actions = {
             return resolve(activity);
         });
     },
-    deleteActivity(context, id) {
-        context.commit(DELETE_ACTIVITY,id);
+    deleteActivity({ commit }, id) {
+        commit(DELETE_ACTIVITY,id);
     },
     getFirstTime({ commit }, payload) {
         return new Promise((resolve) => {

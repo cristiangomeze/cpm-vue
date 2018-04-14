@@ -66,7 +66,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="btn btn-secondary btn-block" data-toggle="modal" data-target="#Options">
+        <button type="button" class="btn btn-outline-info btn-block" data-toggle="modal" data-target="#Options">
             Opciones
         </button>
     </main>

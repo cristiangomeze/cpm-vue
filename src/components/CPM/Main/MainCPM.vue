@@ -13,8 +13,8 @@
                         <main-option></main-option>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-danger btn-block"  onclick="location.reload()">
-                            Reiniciar
+                        <button type="button" class="btn btn-outline-danger btn-block"  onclick="location.reload()">
+                            Borrar Todo
                         </button>
                     </div>
 

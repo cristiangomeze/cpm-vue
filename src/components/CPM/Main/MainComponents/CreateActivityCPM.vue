@@ -67,7 +67,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#addActivity">
+        <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#addActivity">
             Agregar actividad
         </button>
     </form>

@@ -23,8 +23,16 @@
                 <td>{{ activity.costo | currency }}</td>
                 <td>{{ amountActivity(activity) | currency }}</td>
                 <td>
-                    <button class="btn btn-primary" v-on:click.prevent="editActivity(activity.id)">Editar</button>
-                    <button class="btn btn-danger" onclick="alert('Eliminar, Proximamente')">Eliminar</button>
+                  <div class="dropdown show">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Acciones
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" v-on:click.prevent="editActivity(activity.id)">Editar</a>
+                      <a class="dropdown-item" v-on:click.prevent="deleteActivity(activity.id)">Eliminar</a>
+                    </div>
+                  </div>
                 </td>
             </tr>
             </tbody>
@@ -40,19 +48,20 @@
         name: "MainTable",
         components: {
             EditActivity,
-
         },
         methods: {
-            amountActivity(activity) {
-                return activity.costo * activity.duracion;
-            },
-            editActivity(id){
-                this.$store.dispatch("editActivityId", { id }).
-                then(response => {
-                    $("#EditActivity").modal({backdrop: "static"});
-                });
-
-            }
+          amountActivity(activity) {
+            return activity.costo * activity.duracion;
+          },
+          editActivity(id){
+            this.$store.dispatch("editActivityId", { id }).
+            then(response => {
+              $("#EditActivity").modal({backdrop: "static"});
+            });
+          },
+          deleteActivity(id){
+            this.$store.dispatch("deleteActivity", { id });
+          }
         },
         computed: {
             ...mapGetters([
