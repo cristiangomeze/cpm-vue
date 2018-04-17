@@ -36,10 +36,10 @@
         let disbursement = new Array(this.totalDuration);
 
         for (let index = 0; index < disbursement.length; index++) {
-          disbursement[index] = 0;
+          disbursement[index] = this.getExpenses;
           this.showActivities.forEach(actividad => {
             if( (index + 1) > actividad.early_start && (index + 1) <= actividad.early_finish ){
-              disbursement[index] = disbursement[index] + (actividad.costo + this.getExpenses);
+              disbursement[index] += actividad.costo;
             }
           });
 

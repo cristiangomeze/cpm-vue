@@ -10,7 +10,7 @@
                         <a class="nav-link" id="detailInfo-tab" data-toggle="tab" href="#detailInfo" role="tab" aria-controls="detailInfo" aria-selected="false">Informacion detallada</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Nuevo...</a>
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Presupuesto de desembolso</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
